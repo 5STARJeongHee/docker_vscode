@@ -1,0 +1,29 @@
+From kigael/gui_ubuntu:18.04
+
+RUN apt-get update -y && \
+apt-get upgrade -y
+
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test && \
+apt-get update
+
+RUN apt-get install -y gcc-9  libc6-dev wget dpkg gnupg  libxss1 libasound2
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 20 && \
+update-alternatives --config gcc
+
+
+
+RUN wget https://az764295.vo.msecnd.net/stable/26076a4de974ead31f97692a0d32f90d735645c0/code_1.41.1-1576681836_amd64.deb
+ 
+RUN dpkg -i code_1.41.1-1576681836_amd64.deb && \
+apt-get -f install -y 
+
+WORKDIR /usr/lib/x86_64-linux-gnu/
+
+RUN cp libxcb.so.1 libxcib.so.1.bak && \
+cp libxcb.so.1.1.0 libxcb.so.1.1.0.bak && \
+touch /usr/lib/x86_64 && \
+sed -i 's/BIG-REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1 && \
+sed -i 's/BIG_REQUESTS/_IG-REQUESTS/' /usr/lib/x86_64-linux-gnu/libxcb.so.1.1.0
+
+RUN cp libxcb.so.1 libxcb.so.1.1.0 /usr/share/code
+
